@@ -1,0 +1,33 @@
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { Roboto } from 'next/font/google';
+import { Toaster } from "react-hot-toast";
+import { Providers } from "./providers";
+import type { Metadata } from "next";
+
+const roboto = Roboto({
+  weight: ['100','400','700','900'], // pick the weights you need
+  style: ['normal', 'italic'],       // optional
+  subsets: ['latin'],                // optional: add 'latin-ext' if needed
+  display: 'swap',                   // improves loading
+});
+
+export const metadata: Metadata = {
+  title: "SwiftTools",
+  description: "The all-in-one toolbox that fits your daily workflow.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body className={roboto.className}>
+        <Toaster />
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
+}
