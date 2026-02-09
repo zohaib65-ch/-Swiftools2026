@@ -65,13 +65,13 @@ export default function Home() {
       <Navbar />
 
       {/* Hero */}
-      <section className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
+      <section className="flex min-h-screen flex-col items-center justify-center px-4 pt-32 text-center">
         <span className="mb-6 rounded-full bg-white text-black px-4 py-1 text-sm shadow">
           ✨ Introducing SwiftTools 1.0
         </span>
 
-        <h1 className="max-w-4xl text-4xl font-semibold leading-tight text-gray-900 md:text-6xl">
-          <img src="/h1.png" className="mx-auto" />
+        <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-gray-900 md:text-7xl">
+          One toolbox, every <span className="text-blue-600">digital task</span>.
         </h1>
 
         <p className="mt-6 max-w-2xl text-gray-500 text-sm">
@@ -106,6 +106,26 @@ export default function Home() {
               className="w-full bg-transparent text-sm outline-none text-black placeholder-gray-400"
             />
 
+          </div>
+        </div>
+
+        {/* Privacy Banner */}
+        <div className="mt-12 w-full max-w-4xl relative overflow-hidden rounded-2xl bg-linear-to-r from-cyan-400 via-blue-400 via-purple-300 via-orange-200 via-green-200 to-emerald-300 p-8 text-left shadow-lg">
+          <div className="relative z-10 max-w-2xl">
+            <span className="text-xl font-medium text-gray-900 drop-shadow-sm">100% Privacy</span>
+            <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight text-gray-900">
+              The only platform you'll truly love.
+            </h2>
+            <p className="mt-4 text-sm font-medium italic text-gray-700 opacity-80">
+              Swifttools processes your files without storing them. <span className="font-bold">Zero storage. Zero tracking. Zero unpleasant surprises.</span>
+            </p>
+          </div>
+          
+          {/* Heart Graphic */}
+          <div className="absolute top-1/2 -right-12 -translate-y-1/2 opacity-90 select-none pointer-events-none">
+            <svg width="200" height="200" viewBox="0 0 24 24" fill="black">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
           </div>
         </div>
 
