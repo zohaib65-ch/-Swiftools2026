@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 
 import { AuthService } from "@/services/auth.service";
 

@@ -13,6 +13,11 @@ export default function Navbar() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [credits, setCredits] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -32,6 +37,8 @@ export default function Navbar() {
         .catch(err => console.error("Failed to fetch credits", err));
     }
   }, [session]);
+
+  if (!mounted) return <div className="h-16" />; // Placeholder with same height
 
   return (
     <header className="absolute top-3 left-0 right-0 z-40">
