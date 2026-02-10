@@ -10,12 +10,18 @@ import { PdfService } from '../tools/pdf.service';
   imports: [
     BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        connection: {
-          host: configService.get('REDIS_HOST') || 'localhost',
-          port: configService.get('REDIS_PORT') || 6379,
-        },
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const url = configService.get('REDIS_URL');
+        if (url) {
+          return { connection: url };
+        }
+        return {
+          connection: {
+            host: configService.get('REDIS_HOST') || 'localhost',
+            port: configService.get('REDIS_PORT') || 6379,
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     BullModule.registerQueue({
