@@ -37,9 +37,10 @@ export default function CustomFooter() {
               Company
             </h3>
             <ul className="space-y-3 text-sm text-gray-600">
-              <li><a href="/" className="hover:text-gray-900 transition-colors">About</a></li>
-              <li><a href="/" className="hover:text-gray-900 transition-colors">Services</a></li>
-              <li><a href="/" className="hover:text-gray-900 transition-colors">Contact</a></li>
+              <li><a href="/about" className="hover:text-gray-900 transition-colors">About</a></li>
+              <li><a href="/tools" className="hover:text-gray-900 transition-colors">Services</a></li>
+              <li><a href="/contact" className="hover:text-gray-900 transition-colors">Contact</a></li>
+              <li><a href="/help" className="hover:text-gray-900 transition-colors">Help Center</a></li>
             </ul>
           </div>
 
