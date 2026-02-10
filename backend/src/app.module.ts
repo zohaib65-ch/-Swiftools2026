@@ -18,7 +18,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     PrismaModule,
     UserModule,
     AuthModule,
-    // QueueModule,  // Disabled due to Redis version compatibility issues
+    QueueModule,
     ToolsModule,
     AnalyticsModule,
     ServeStaticModule.forRoot({
