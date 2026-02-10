@@ -66,23 +66,23 @@ export default function JobProgress({ jobId, token, onComplete, onError }: JobPr
   }, [jobId, token, onComplete, onError]);
 
   return (
-    <div className="w-full p-4 border rounded-xl bg-white shadow-sm mt-4">
-      <div className="flex items-center justify-between mb-2">
+    <div className="w-full mt-6">
+      <div className="flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-2">
-          {status === "processing" && <Loader2 className="animate-spin text-blue-500" size={20} />}
-          {status === "completed" && <CheckCircle className="text-green-500" size={20} />}
-          {status === "failed" && <XCircle className="text-red-500" size={20} />}
+          {status === "processing" && <Loader2 className="animate-spin text-blue-500" size={16} />}
+          {status === "completed" && <CheckCircle className="text-green-500" size={16} />}
+          {status === "failed" && <XCircle className="text-red-500" size={16} />}
 
-          <span className="font-medium text-sm text-gray-700 capitalize">
-            {status === "processing" ? "Processing your file..." : status}
+          <span className="font-bold text-xs text-gray-900 uppercase tracking-tight">
+            {status === "processing" ? "Converting..." : status}
           </span>
         </div>
-        <span className="text-xs font-bold text-gray-500">{progress}%</span>
+        <span className="text-[10px] font-black text-gray-400">{progress}%</span>
       </div>
 
-      <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+      <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
         <motion.div
-          className={`h-2.5 rounded-full ${status === "failed" ? "bg-red-500" : status === "completed" ? "bg-green-500" : "bg-blue-500"
+          className={`h-1.5 rounded-full ${status === "failed" ? "bg-red-500" : status === "completed" ? "bg-green-500" : "bg-linear-to-r from-blue-400 to-indigo-500"
             }`}
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}

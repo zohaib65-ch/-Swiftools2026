@@ -11,7 +11,8 @@ import getCroppedImg from "@/lib/cropImage";
 import CustomFooter from "@/components/CustomFooter";
 import FileUploader from "@/components/FileUploader";
 import JobProgress from "@/components/JobProgress";
-import { Download } from "lucide-react";
+import { Download, RotateCw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ToolDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -204,216 +205,233 @@ export default function ToolDetailPage({ params }: { params: Promise<{ slug: str
   const showGridTools = ["image-resizer", "bulk-image-resizer", "image-cropper", "social-media-image-cropper"];
 
   return (
-    <>
-      <div className="text-black bg-linear-to-r from-[#f8f7ff] via-[#faf5f5] to-[#fffdf5]">
-        <div className="mx-auto max-w-4xl px-3 py-4 min-h-screen">
-          <Navbar />
+    <div className="min-h-screen bg-linear-to-r from-[#f8f7ff] via-[#faf5f5] to-[#fffdf5] font-[inherit]">
+      <Navbar />
 
-          {/* Header */}
-          <div className="text-center mb-8 mt-24">
-            <h1 className="text-2xl sm:text-4xl font-bold bg-clip-text text-transparent bg-linear-to-r from-gray-900 to-gray-600 mb-2">{detail.title}</h1>
-            <p className="text-sm sm:text-base text-gray-500 max-w-2xl mx-auto">{detail.description}</p>
+      <div className="mx-auto max-w-4xl px-6 pt-32 pb-20">
+        
+        {/* Breadcrumb Badge */}
+        <div className="flex justify-center mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white shadow-sm border border-gray-100 text-[10px] font-black uppercase tracking-widest text-gray-400">
+            Image Tools &gt;
+          </div>
+        </div>
+
+        {/* Header */}
+        <div className="text-center mb-12 space-y-4">
+          <h1 className="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter">
+            {detail?.title || "Image Tool"}
+          </h1>
+          <p className="text-base md:text-lg text-gray-500 max-w-lg mx-auto font-medium">
+            {detail?.description || "Enhance, convert, and edit your images in seconds."}
+          </p>
+        </div>
+
+        {/* Main Card */}
+        <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-2xl shadow-gray-200/50 border border-gray-100 relative overflow-hidden">
+          
+          {/* Step 1: Upload */}
+          <div className="mb-0">
+            <FileUploader
+              files={selectedFiles}
+              onFilesChange={handleFilesChange}
+              showPreview={!processing}
+            />
           </div>
 
-          {/* Main Card */}
-          <div className="rounded-2xl p-6 shadow-xl shadow-gray-100 bg-white border border-gray-100">
-
-            {/* Step 1: Upload */}
-            <div className="mb-6">
-              <FileUploader
-                files={selectedFiles}
-                onFilesChange={handleFilesChange}
-                showPreview={!processing} // Hide preview list when processing starts to show progress instead? Or keep it.
-              />
-            </div>
-
-            {/* Step 2: Configure (Only if files selected and not yet processing) */}
-            {selectedFiles.length > 0 && !processing && (
-              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
-
-                {/* Configuration Controls */}
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                  <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                    <span>⚙️</span> Configure Output
-                  </h3>
-
-                  {/* EXIF Data */}
-                  {slug === "exif-metadata-remover" && exifData && (
-                    <div className="rounded border border-gray-300 bg-white p-2 text-xs overflow-x-auto max-h-40">
-                      <table className="w-full text-left">
-                        <tbody>
-                          {Object.entries(exifData).map(([key, value]) => (
-                            <tr key={key}>
-                              <td className="pr-2 font-medium text-gray-600">{key}</td>
-                              <td className="text-gray-900">{String(value)}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-
-                  {/* Width/Height Inputs */}
-                  {showGridTools.includes(slug) && (
-                    <div className="flex gap-4 mb-4">
-                      <div className="flex flex-col">
-                        <label className="text-xs font-semibold uppercase text-gray-500 mb-1">Width</label>
-                        <input
-                          type="number"
-                          value={cropWidth}
-                          onChange={(e) => setCropWidth(+e.target.value)}
-                          className="w-24 px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent outline-none"
-                          placeholder="Width"
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <label className="text-xs font-semibold uppercase text-gray-500 mb-1">Height</label>
-                        <input
-                          type="number"
-                          value={cropHeight}
-                          onChange={(e) => setCropHeight(+e.target.value)}
-                          className="w-24 px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent outline-none"
-                          placeholder="Height"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Converter Format Selectors */}
-                  {slug === "image-converter" && (
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-xs font-semibold uppercase text-gray-500 mb-1 block">From Format</label>
-                        <select
-                          value={fromFormat}
-                          onChange={(e) => setFromFormat(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm"
-                        >
-                          <option value="jpg">JPG</option>
-                          <option value="png">PNG</option>
-                          <option value="webp">WebP</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold uppercase text-gray-500 mb-1 block">To Format</label>
-                        <select
-                          value={toFormat}
-                          onChange={(e) => setToFormat(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm"
-                        >
-                          <option value="jpg">JPG</option>
-                          <option value="png">PNG</option>
-                          <option value="webp">WebP</option>
-                        </select>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Watermark Controls */}
-                  {slug === "watermark-adder" && (
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-xs font-semibold uppercase text-gray-500 mb-1 block">Type</label>
-                          <select
-                            value={watermarkType}
-                            onChange={(e) => setWatermarkType(e.target.value)}
-                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm"
-                          >
-                            <option value="text">Text</option>
-                            <option value="logo">Logo Image</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="text-xs font-semibold uppercase text-gray-500 mb-1 block">Position</label>
-                          <select
-                            value={watermarkPosition}
-                            onChange={(e) => setWatermarkPosition(e.target.value)}
-                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm"
-                          >
-                            <option value="bottom-right">Bottom Right</option>
-                            <option value="bottom-left">Bottom Left</option>
-                            <option value="top-right">Top Right</option>
-                            <option value="top-left">Top Left</option>
-                            <option value="center">Center</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      {watermarkType === "text" ? (
-                        <input
-                          type="text"
-                          value={watermarkText}
-                          onChange={(e) => setWatermarkText(e.target.value)}
-                          placeholder="Enter watermark text..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                        />
-                      ) : (
-                        <div className="border border-gray-300 rounded-lg p-2 bg-white">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setWatermarkLogo(e.target.files[0])}
-                            className="text-sm w-full"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
+          {/* Step 2: Configure */}
+          {selectedFiles.length > 0 && !processing && jobIds.length === 0 && (
+            <motion.div 
+               initial={{ opacity: 0, y: 10 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="mt-10 space-y-10"
+            >
+              {/* Configuration Controls */}
+              <div className="space-y-8">
+                <div className="flex items-center gap-2 text-[11px] font-black text-gray-900 uppercase tracking-widest">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                  Configure Output
                 </div>
 
-                {/* Visual Tools (Cropper) */}
-                {["image-cropper", "image-resizer", "bulk-image-resizer", "social-media-image-cropper"].includes(slug) && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {previewUrls.map((url, idx) => (
-                      <div key={idx} className="relative h-60 rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-900">
-                        <Cropper
-                          image={url}
-                          crop={cropData[idx]?.crop || { x: 0, y: 0 }}
-                          zoom={cropData[idx]?.zoom || 1}
-                          aspect={slug === "social-media-image-cropper" ? 1 : cropWidth && cropHeight ? cropWidth / cropHeight : undefined}
-                          onCropChange={(c) => setCropData((prev) => { const d = [...prev]; if (d[idx]) d[idx].crop = c; return d; })}
-                          onZoomChange={(z) => setCropData((prev) => { const d = [...prev]; if (d[idx]) d[idx].zoom = z; return d; })}
-                          onCropComplete={onCropComplete(idx)}
-                          cropShape={slug === "social-media-image-cropper" ? "round" : "rect"}
-                          showGrid={true}
+                {/* EXIF Data */}
+                {slug === "exif-metadata-remover" && exifData && (
+                  <div className="rounded-3xl border border-gray-100 bg-gray-50/50 p-6 text-xs overflow-x-auto max-h-60 scrollbar-hide">
+                    <table className="w-full text-left">
+                      <tbody className="space-y-2">
+                        {Object.entries(exifData).map(([key, value]) => (
+                          <tr key={key} className="border-b border-gray-100 last:border-0">
+                            <td className="py-2 pr-4 font-bold text-gray-400 uppercase tracking-tighter">{key}</td>
+                            <td className="py-2 text-gray-900 font-bold">{String(value)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* Width/Height Inputs */}
+                {showGridTools.includes(slug) && (
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter ml-1">Width (px)</label>
+                      <input
+                        type="number"
+                        value={cropWidth}
+                        onChange={(e) => setCropWidth(+e.target.value)}
+                        className="w-full px-5 py-4 bg-gray-50/50 rounded-2xl border border-gray-100 text-sm font-bold focus:bg-white focus:border-blue-400 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter ml-1">Height (px)</label>
+                      <input
+                        type="number"
+                        value={cropHeight}
+                        onChange={(e) => setCropHeight(+e.target.value)}
+                        className="w-full px-5 py-4 bg-gray-50/50 rounded-2xl border border-gray-100 text-sm font-bold focus:bg-white focus:border-blue-400 outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Converter Format Selectors */}
+                {slug === "image-converter" && (
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter ml-1">From Format</label>
+                      <select
+                        value={fromFormat}
+                        onChange={(e) => setFromFormat(e.target.value)}
+                        className="w-full px-5 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl text-sm font-bold appearance-none cursor-pointer hover:bg-white transition-all"
+                      >
+                        <option value="jpg">JPG</option>
+                        <option value="png">PNG</option>
+                        <option value="webp">WebP</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter ml-1">To Format</label>
+                      <select
+                        value={toFormat}
+                        onChange={(e) => setToFormat(e.target.value)}
+                        className="w-full px-5 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl text-sm font-bold appearance-none cursor-pointer hover:bg-white transition-all"
+                      >
+                        <option value="jpg">JPG</option>
+                        <option value="png">PNG</option>
+                        <option value="webp">WebP</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {/* Watermark Controls */}
+                {slug === "watermark-adder" && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter ml-1">Type</label>
+                        <select
+                          value={watermarkType}
+                          onChange={(e) => setWatermarkType(e.target.value)}
+                          className="w-full px-5 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl text-sm font-bold appearance-none cursor-pointer"
+                        >
+                          <option value="text">Text</option>
+                          <option value="logo">Logo Image</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter ml-1">Position</label>
+                        <select
+                          value={watermarkPosition}
+                          onChange={(e) => setWatermarkPosition(e.target.value)}
+                          className="w-full px-5 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl text-sm font-bold appearance-none cursor-pointer"
+                        >
+                          <option value="bottom-right">Bottom Right</option>
+                          <option value="bottom-left">Bottom Left</option>
+                          <option value="top-right">Top Right</option>
+                          <option value="top-left">Top Left</option>
+                          <option value="center">Center</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {watermarkType === "text" ? (
+                      <input
+                        type="text"
+                        value={watermarkText}
+                        onChange={(e) => setWatermarkText(e.target.value)}
+                        placeholder="Enter watermark text..."
+                        className="w-full px-5 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl text-sm font-bold outline-none focus:bg-white focus:border-blue-400 transition-all"
+                      />
+                    ) : (
+                      <div className="border border-gray-100 rounded-2xl p-4 bg-gray-50/50">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setWatermarkLogo(e.target.files[0])}
+                          className="text-xs w-full font-bold"
                         />
                       </div>
-                    ))}
+                    )}
                   </div>
                 )}
               </div>
-            )}
 
-            {/* Step 3: Action Button */}
-            {selectedFiles.length > 0 && !processing && (
+              {/* Visual Tools (Cropper) */}
+              {["image-cropper", "image-resizer", "bulk-image-resizer", "social-media-image-cropper"].includes(slug) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {previewUrls.map((url, idx) => (
+                    <div key={idx} className="relative h-72 rounded-[32px] overflow-hidden border border-gray-100 shadow-inner bg-gray-900 group/cropper">
+                      <Cropper
+                        image={url}
+                        crop={cropData[idx]?.crop || { x: 0, y: 0 }}
+                        zoom={cropData[idx]?.zoom || 1}
+                        aspect={slug === "social-media-image-cropper" ? 1 : cropWidth && cropHeight ? cropWidth / cropHeight : undefined}
+                        onCropChange={(c) => setCropData((prev) => { const d = [...prev]; if (d[idx]) d[idx].crop = c; return d; })}
+                        onZoomChange={(z) => setCropData((prev) => { const d = [...prev]; if (d[idx]) d[idx].zoom = z; return d; })}
+                        onCropComplete={onCropComplete(idx)}
+                        cropShape={slug === "social-media-image-cropper" ? "round" : "rect"}
+                        showGrid={true}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Start Button */}
               <button
                 onClick={handleStartProcess}
-                className="mt-6 w-full rounded-xl bg-black text-white py-4 text-base font-bold hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl active:scale-[0.99]"
+                className="w-full py-5 bg-linear-to-r from-blue-400 to-indigo-500 text-white rounded-[24px] font-black text-xl hover:scale-[1.01] transition-all shadow-2xl shadow-blue-200 flex items-center justify-center gap-3"
               >
-                Start Processing ({selectedFiles.length} Files)
+                Start Processing ({selectedFiles.length} {selectedFiles.length === 1 ? 'Image' : 'Images'})
+                <Download size={24} />
               </button>
-            )}
+            </motion.div>
+          )}
 
-            {/* Step 4: Progress & Results */}
-            {processing && (
-              <div className="mt-6 space-y-4">
-                <h3 className="font-semibold text-gray-800">Processing Jobs</h3>
-                {jobIds.map((job, idx) => (
-                  <div key={job.jobId} className="border-b border-gray-100 last:border-0 pb-2 mb-2">
-                    <div className="text-xs text-gray-500 mb-1 flex justify-between">
-                       <span>{job.fileName}</span>
-                       {completedJobs[job.jobId] && (
-                           <a 
-                             href={completedJobs[job.jobId]} 
-                             download 
-                             className="text-blue-600 font-bold hover:underline"
-                             target="_blank"
-                             rel="noopener noreferrer"
-                           >
-                             Download
-                           </a>
-                       )}
+          {/* Progress & Results */}
+          {(processing || jobIds.length > 0) && (
+            <div className="mt-10 space-y-6">
+              <div className="flex items-center justify-between mb-4 px-2">
+                <h3 className="font-black text-gray-900 text-xs uppercase tracking-widest">Processing Jobs</h3>
+                <span className="text-[10px] font-bold text-gray-400">{selectedFiles.length} file(s)</span>
+              </div>
+              
+              <div className="space-y-4">
+                {jobIds.map((job) => (
+                  <div key={job.jobId} className="bg-gray-50/30 rounded-[24px] p-6 border border-gray-100">
+                    <div className="text-xs font-bold text-gray-600 mb-4 flex justify-between items-center px-1">
+                      <span className="truncate max-w-[250px]">{job.fileName}</span>
+                      {completedJobs[job.jobId] && (
+                          <a 
+                            href={completedJobs[job.jobId]} 
+                            download 
+                            className="bg-green-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-green-600 transition-all shadow-lg shadow-green-100"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Download
+                          </a>
+                      )}
                     </div>
                     <JobProgress
                       jobId={job.jobId}
@@ -422,22 +440,24 @@ export default function ToolDetailPage({ params }: { params: Promise<{ slug: str
                     />
                   </div>
                 ))}
-
-                {/* Reset Button */}
+              </div>
+              
+              {Object.keys(completedJobs).length === jobIds.length && jobIds.length > 0 && (
                 <button
-                  onClick={() => { setProcessing(false); setSelectedFiles([]); setJobIds([]); }}
-                  className="mt-4 text-sm text-gray-500 hover:text-black underline"
+                  onClick={() => { setProcessing(false); setSelectedFiles([]); setJobIds([]); setCompletedJobs({}); }}
+                  className="w-full py-5 bg-black text-white rounded-[24px] font-black text-xl hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 mt-8"
                 >
                   Process New Files
                 </button>
-              </div>
-            )}
+              )}
+            </div>
+          )}
 
-          </div>
         </div>
-        <Footer />
-        <CustomFooter />
       </div>
-    </>
+
+      <Footer />
+      <CustomFooter />
+    </div>
   );
 }

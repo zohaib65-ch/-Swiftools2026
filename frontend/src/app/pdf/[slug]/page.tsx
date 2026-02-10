@@ -4,6 +4,7 @@ import { useState, use } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Lock, RotateCw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { pdfTool } from "@/lib/tools";
 import StandardFileTool from "@/components/FileTool";
 import FileUploader from "@/components/FileUploader";
@@ -205,128 +206,134 @@ export default function PDFToolPage({ params }: { params: Promise<{ slug: string
   };
 
   return (
-    <div className="text-black bg-linear-to-r from-[#f8f7ff] via-[#faf5f5] to-[#fffdf5]">
-      <div className="mx-auto max-w-md px-3 py-4 min-h-screen">
-        <Navbar />
+    <div className="min-h-screen bg-linear-to-r from-[#f8f7ff] via-[#faf5f5] to-[#fffdf5] font-[inherit]">
+      <Navbar />
+
+      <div className="mx-auto max-w-3xl px-6 pt-32 pb-20">
+        
+        {/* Breadcrumb Badge */}
+        <div className="flex justify-center mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white shadow-sm border border-gray-100 text-[10px] font-black uppercase tracking-widest text-gray-400">
+            PDF Tools &gt;
+          </div>
+        </div>
 
         {/* Header */}
-        <div className="text-center mb-2 mt-24">
-          <h1 className="text-lg md:text-2xl font-bold">
+        <div className="text-center mb-12 space-y-4">
+          <h1 className="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter">
             {detail?.title || "PDF Converter"}
           </h1>
-          <p className="text-[11px] md:text-sm text-gray-600">
-            {detail?.description || "Convert files easily"}
+          <p className="text-base md:text-lg text-gray-500 max-w-lg mx-auto font-medium">
+            {detail?.description || "Convert files into high-quality images in seconds."}
           </p>
         </div>
 
         {/* Main Card */}
-        <div className="rounded-xl p-3 shadow-sm bg-white space-y-2">
-
+        <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-2xl shadow-gray-200/50 border border-gray-100 relative overflow-hidden group">
+          
           {!processing && jobIds.length === 0 && (
-            <FileUploader
-              files={files}
-              onFilesChange={handleFilesChange}
-              accept={isImageToPdf ? "image/*" : "application/pdf"}
-              multiple={true}
-            />
-          )}
+            <div className="space-y-8">
+              <FileUploader
+                files={files}
+                onFilesChange={handleFilesChange}
+                accept={isImageToPdf ? "image/*" : "application/pdf"}
+                multiple={true}
+              />
 
-          {/* ROTATION INPUT (ONLY pdf-rotator) */}
-          {files.length > 0 && isPdfRotator && !processing && (
-            <div className="mt-3 mb-2">
-              <label className="flex items-center gap-2 text-xs text-gray-600 mb-1">
-                <RotateCw className="w-4 h-4" />
-                Rotate pages
-              </label>
-              <select
-                value={rotation}
-                onChange={(e) => setRotation(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:border-gray-900"
-              >
-                <option value="90">90° clockwise</option>
-                <option value="180">180°</option>
-                <option value="270">270° clockwise</option>
-              </select>
+              {files.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-8"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* ROTATION / OPTIONS placeholder like in image */}
+                    <div className="space-y-3">
+                       <label className="text-[11px] font-black text-gray-900 uppercase tracking-wider">Convert:</label>
+                       <div className="flex items-center gap-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-100 cursor-pointer hover:bg-white transition-all">
+                         <div className="w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center">
+                            <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                         </div>
+                         <span className="text-sm font-bold text-gray-700">All pages</span>
+                       </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                       <label className="text-[11px] font-black text-gray-900 uppercase tracking-wider">Output:</label>
+                       <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-100 text-sm font-bold text-gray-700 flex justify-between items-center cursor-pointer hover:bg-white transition-all">
+                          JPG quality
+                          <RotateCw size={14} className="text-gray-400" />
+                       </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleStartProcess}
+                    className="w-full py-5 bg-linear-to-r from-blue-400 to-indigo-500 text-white rounded-[20px] font-black text-xl hover:scale-[1.01] transition-all shadow-xl shadow-blue-200 flex items-center justify-center gap-3"
+                  >
+                    {isPdfRotator ? "Rotate PDF" : requiresPassword ? "Protect PDF" : `Convert to ${slug.includes('jpg') ? 'JPG' : 'PDF'}`}
+                  </button>
+                </motion.div>
+              )}
             </div>
-          )}
-
-          {/* Password (ONLY pdf-protector) */}
-          {files.length > 0 && requiresPassword && !processing && (
-            <>
-              <div className="relative mt-4 mb-2">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password (min 4 characters)"
-                  className="w-full rounded-full border border-gray-300 pl-11 pr-4 py-2 text-sm focus:outline-none focus:border-gray-900"
-                />
-              </div>
-
-              <div className="relative mb-2">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm password"
-                  className="w-full rounded-full border border-gray-300 pl-11 pr-4 py-2 text-sm focus:outline-none focus:border-gray-900"
-                />
-              </div>
-            </>
-          )}
-
-          {/* Error */}
-          {error && <p className="text-red-500 text-xs text-center">{error}</p>}
-
-          {/* Convert button */}
-          {files.length > 0 && !processing && jobIds.length === 0 && (
-            <button
-              onClick={handleStartProcess}
-              className="mt-4 w-full rounded-lg bg-black text-white py-2.5 text-sm font-semibold hover:bg-gray-800 transition-all"
-            >
-              {isPdfRotator ? "Rotate PDF" : requiresPassword ? "Protect PDF" : "Convert"}
-            </button>
           )}
 
           {/* Processing / Result */}
           {(processing || jobIds.length > 0) && (
-            <div className="mt-4 space-y-4">
-              <h3 className="font-semibold text-gray-800 text-sm">Processing Jobs</h3>
-              {jobIds.map((job) => (
-                <div key={job.jobId} className="border-b border-gray-100 last:border-0 pb-2 mb-2">
-                  <div className="text-xs text-gray-500 mb-1 flex justify-between">
-                    <span>{job.fileName}</span>
-                    {completedJobs[job.jobId] && (
-                        <a 
-                          href={completedJobs[job.jobId]} 
-                          download 
-                          className="text-blue-600 font-bold hover:underline"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Download
-                        </a>
-                    )}
-                  </div>
-                  <JobProgress
-                    jobId={job.jobId}
-                    token={session?.accessToken}
-                    onComplete={(data) => {
-                       setCompletedJobs((prev) => ({ ...prev, [job.jobId]: data.resultUrl }));
-                    }}
-                  />
-                </div>
-              ))}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-black text-gray-900 text-xs uppercase tracking-widest">Processing Files</h3>
+                <span className="text-[10px] font-bold text-gray-400">{files.length} file(s)</span>
+              </div>
               
-              <button
-                onClick={clearAll}
-                className="mt-4 text-sm text-gray-500 hover:text-black underline w-full text-center"
-              >
-                Process New Files
-              </button>
+              <div className="space-y-4">
+                {jobIds.map((job) => (
+                  <div key={job.jobId} className="bg-gray-50/30 rounded-2xl p-4 border border-gray-100">
+                    <div className="text-xs font-bold text-gray-600 mb-2 flex justify-between items-center">
+                      <span className="truncate max-w-[200px]">{job.fileName}</span>
+                      {completedJobs[job.jobId] && (
+                          <a 
+                            href={completedJobs[job.jobId]} 
+                            download 
+                            className="bg-green-500 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tight hover:bg-green-600 transition-all"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Download
+                          </a>
+                      )}
+                    </div>
+                    <JobProgress
+                      jobId={job.jobId}
+                      token={session?.accessToken}
+                      onComplete={(data) => {
+                         setCompletedJobs((prev) => ({ ...prev, [job.jobId]: data.resultUrl }));
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+              
+              {Object.keys(completedJobs).length === jobIds.length && jobIds.length > 0 && (
+                <button
+                  onClick={clearAll}
+                  className="w-full py-5 bg-black text-white rounded-[20px] font-black text-xl hover:bg-gray-800 transition-all shadow-xl shadow-gray-200"
+                >
+                  Process New Files
+                </button>
+              )}
             </div>
+          )}
+
+          {/* Error */}
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-4 p-4 bg-red-50 text-red-500 rounded-2xl text-xs font-bold text-center border border-red-100"
+            >
+              {error}
+            </motion.div>
           )}
 
         </div>

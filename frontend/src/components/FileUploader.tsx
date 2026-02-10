@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Upload, X, File as FileIcon, Image as ImageIcon } from "lucide-react";
+import { Upload, X, File as FileIcon, Image as ImageIcon, RotateCw } from "lucide-react";
 
 export default function FileUploader({
   files = [],
@@ -67,73 +67,101 @@ export default function FileUploader({
   return (
     <div className="w-full">
       {/* Dropzone */}
-      <label
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-        className={`flex flex-col items-center justify-center w-full h-40 sm:h-52 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200
-          ${isDragging
-            ? "border-blue-500 bg-blue-50 scale-[1.02]"
-            : "border-gray-300 bg-gray-50 hover:bg-gray-100"
-          }`}
-      >
-        <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
-          <div className={`p-3 rounded-full mb-3 ${isDragging ? "bg-blue-100 text-blue-600" : "bg-gray-200 text-gray-500"}`}>
-            <Upload size={28} />
+      {!files.length ? (
+        <label
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          className={`flex flex-col items-center justify-center w-full h-52 border-2 border-dashed rounded-3xl cursor-pointer transition-all duration-300
+            ${isDragging
+              ? "border-blue-500 bg-blue-50/50 scale-[1.01]"
+              : "border-gray-200 bg-gray-50/30 hover:bg-gray-50 hover:border-gray-300"
+            }`}
+        >
+          <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
+            <div className={`p-4 rounded-3xl mb-4 shadow-sm ${isDragging ? "bg-blue-100/50 text-blue-600" : "bg-white text-blue-500"}`}>
+              <Upload size={32} />
+            </div>
+            <p className="mb-2 text-lg font-bold text-gray-900">
+              Drag & drop your files here
+            </p>
+            <p className="text-sm text-gray-500 mb-4">
+              or <span className="text-blue-600 underline">Browse files</span>
+            </p>
+            <p className="text-xs text-gray-400 font-medium">
+              Supported formats: {accept === "image/*" ? "PNG, JPG, WebP" : accept.split("/")[1]?.toUpperCase() || "PDF"} • Max size: {maxSizeMB}MB
+            </p>
           </div>
-          <p className="mb-2 text-sm sm:text-base font-semibold text-gray-700">
-            <span className="font-bold">Click to upload</span> or drag and drop
-          </p>
-          <p className="text-xs text-gray-500">
-            {accept === "image/*" ? "SVG, PNG, JPG or WebP" : "Supported files"} (Max {maxSizeMB}MB)
-          </p>
-        </div>
-        <input
-          type="file"
-          className="hidden"
-          accept={accept}
-          multiple={multiple}
-          onChange={handleChange}
-        />
-      </label>
-
-      {/* File List */}
-      {files.length > 0 && showPreview && (
-        <div className="mt-4 space-y-2">
+          <input
+            type="file"
+            className="hidden"
+            accept={accept}
+            multiple={multiple}
+            onChange={handleChange}
+          />
+        </label>
+      ) : (
+        /* File List / Active File */
+        <div className="space-y-3">
           {files.map((file, index) => (
             <div
               key={`${file.name}-${index}`}
-              className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm"
+              className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all"
             >
-              <div className="flex items-center gap-3 overflow-hidden">
-                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 shrink-0">
-                  {file.type.startsWith("image/") ? (
+              <div className="flex items-center gap-4 overflow-hidden">
+                <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-red-500 shrink-0 border border-gray-100">
+                  {file.type.includes("pdf") ? (
+                    <FileIcon size={24} />
+                  ) : file.type.startsWith("image/") ? (
                     <img
                       src={URL.createObjectURL(file)}
                       alt="preview"
-                      className="w-full h-full object-cover rounded-lg"
+                      className="w-full h-full object-cover rounded-xl"
                       onLoad={(e) => URL.revokeObjectURL((e.target as HTMLImageElement).src)}
                     />
                   ) : (
-                    <FileIcon size={20} />
+                    <FileIcon size={24} />
                   )}
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="text-sm font-medium text-gray-700 truncate block max-w-[200px]">
+                  <span className="text-sm font-bold text-gray-900 truncate block">
                     {file.name}
                   </span>
-                  <span className="text-xs text-gray-400">
-                    {(file.size / 1024).toFixed(1)} KB
-                  </span>
+                  <div className="flex items-center gap-2 text-xs text-gray-400 font-medium">
+                    <span>{(file.size / 1024 / 1024).toFixed(1)} MB</span>
+                    <span>•</span>
+                    <span className="text-blue-500">Ready</span>
+                  </div>
                 </div>
               </div>
-              <button
-                onClick={() => removeFile(index)}
-                className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-              >
-                <X size={18} />
-              </button>
+              
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = accept;
+                    input.onchange = (e: any) => {
+                      if (e.target.files?.length) {
+                         const newFiles = [...files];
+                         newFiles[index] = e.target.files[0];
+                         onFilesChange(newFiles);
+                      }
+                    };
+                    input.click();
+                  }}
+                  className="flex items-center gap-2 px-4 py-1.5 text-xs font-bold text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-full border border-gray-200 transition-all"
+                >
+                  <RotateCw size={14} /> Replace
+                </button>
+                <button
+                  onClick={() => removeFile(index)}
+                  className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
