@@ -58,7 +58,7 @@ export default function CustomFooter() {
 
         {/* Bottom Section */}
         <div className="sm:mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-200 pt-6 text-sm text-gray-500 md:flex-row">
-          <p>© {new Date().getFullYear()} SwiftTools. All rights reserved.</p>
+          <p suppressHydrationWarning>© {new Date().getFullYear()} SwiftTools. All rights reserved.</p>
 
           <div className="flex gap-5">
             <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
