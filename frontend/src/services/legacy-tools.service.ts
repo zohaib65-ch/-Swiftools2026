@@ -46,6 +46,11 @@ export const LegacyToolsService = {
       }
     });
 
+    // Special case for image-converter legacy API
+    if (slug === 'image-converter' && options.fromFormat && options.toFormat) {
+      formData.append('conversionType', `${options.fromFormat}-to-${options.toFormat}`);
+    }
+
     const response = await fetch(`${FRONTEND_URL}${apiPath}`, {
       method: "POST",
       body: formData,

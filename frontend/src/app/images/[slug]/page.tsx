@@ -58,6 +58,11 @@ export default function ToolDetailPage({ params }: { params: Promise<{ slug: str
     const urls = files.map((file) => URL.createObjectURL(file));
     setPreviewUrls(urls);
     setCropData(files.map(() => ({ crop: { x: 0, y: 0 }, zoom: 1 })));
+    
+    // Reset processing state when new files are selected
+    setJobIds([]);
+    setCompletedJobs({});
+    setProcessing(false);
 
     // Auto-detect "from" format from first file
     if (files.length > 0) {

@@ -66,6 +66,12 @@ export default function PDFToolPage({ params }: { params: Promise<{ slug: string
     } else {
       setFiles(selected);
     }
+
+    // Reset processing state when new files are selected
+    setJobIds([]);
+    setCompletedJobs({});
+    setProcessing(false);
+    setError("");
   };
 
   const clearAll = () => {
