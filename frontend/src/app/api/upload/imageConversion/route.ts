@@ -3,7 +3,7 @@ import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import { Buffer } from "node:buffer";
 
-const allowedConversions = {
+const allowedConversions: Record<string, { from: string[], to: string }> = {
   "jpg-to-png": { from: ["jpg", "jpeg", "jfif"], to: "png" },
   "png-to-jpg": { from: ["png"], to: "jpeg" },
   "jpg-to-webp": { from: ["jpg", "jpeg", "jfif"], to: "webp" },
@@ -19,22 +19,21 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
 
-    const conversionType = formData.get("conversionType") as string;
-    console.log('====================================');
-    console.log(conversionType);
-    console.log('====================================');
-    const file = formData.get("file") as File;
+    const conversionType = formData.get("conversionType")?.toString();
+    const fileEntry = formData.get("file");
 
-    if (!file) {
-      return new Response(
-        JSON.stringify({ error: "No file uploaded" }),
+    if (!fileEntry || typeof fileEntry === 'string') {
+      return NextResponse.json(
+        { error: "No file uploaded or invalid file format" },
         { status: 400 }
       );
     }
 
+    const file = fileEntry as any as { name: string; arrayBuffer: () => Promise<ArrayBuffer> };
+
     if (!conversionType || !allowedConversions[conversionType]) {
-      return new Response(
-        JSON.stringify({ error: "Invalid conversion type" }),
+      return NextResponse.json(
+        { error: `Invalid conversion type: ${conversionType || 'missing'}` },
         { status: 400 }
       );
     }
