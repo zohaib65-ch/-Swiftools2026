@@ -3,7 +3,7 @@ import sharp from "sharp";
 export async function POST(request) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file");
+    const file = formData.get("file") as any as File;
 
     if (!file) {
       return new Response(JSON.stringify({ error: "No valid image uploaded" }), {
