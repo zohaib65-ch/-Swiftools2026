@@ -4,11 +4,11 @@ export async function POST(request) {
   try {
     const formData = await request.formData();
 
-    const file = formData.get("file"); // main image
-    const watermarkType = formData.get("watermarkType"); // text | logo
-    const watermarkText = formData.get("watermarkText");
-    const watermarkLogo = formData.get("watermarkLogo"); // FILE
-    const position = formData.get("position") || "bottom-right";
+    const file = formData.get("file") as File; // main image
+    const watermarkType = formData.get("watermarkType") as string; // text | logo
+    const watermarkText = formData.get("watermarkText") as string;
+    const watermarkLogo = formData.get("watermarkLogo") as File; // FILE
+    const position = (formData.get("position") as string) || "bottom-right";
 
     if (!file) {
       return new Response(JSON.stringify({ error: "No image uploaded" }), {

@@ -4,9 +4,9 @@ import sharp from "sharp";
 export async function POST(request) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file");
+    const file = formData.get("file") as File;
     const blurAmount = Number(formData.get("blur")) || 5;
-    const slug = formData.get("conversionType");
+    const slug = formData.get("conversionType") as string;
     console.log(slug);
     if (!file || !file.arrayBuffer) {
       return new Response(JSON.stringify({ error: "No valid image uploaded" }), {

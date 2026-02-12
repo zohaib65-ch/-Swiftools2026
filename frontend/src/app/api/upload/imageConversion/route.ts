@@ -1,5 +1,7 @@
 import sharp from "sharp";
 import path from "path";
+import { NextRequest, NextResponse } from "next/server";
+import { Buffer } from "node:buffer";
 
 const allowedConversions = {
   "jpg-to-png": { from: ["jpg", "jpeg", "jfif"], to: "png" },
@@ -13,15 +15,15 @@ const allowedConversions = {
   "webp-to-webp": { from: ["webp"], to: "webp" },
 };
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
 
-    const conversionType = formData.get("conversionType");
+    const conversionType = formData.get("conversionType") as string;
     console.log('====================================');
     console.log(conversionType);
     console.log('====================================');
-    const file = formData.get("file");
+    const file = formData.get("file") as File;
 
     if (!file) {
       return new Response(
@@ -56,7 +58,7 @@ export async function POST(request) {
     if (to === "png") output = await sharp(buffer).png().toBuffer();
     if (to === "webp") output = await sharp(buffer).webp().toBuffer();
 
-    return new Response(output as any, {
+    return new NextResponse(output, {
       status: 200,
       headers: {
         "Content-Type": `image/${to}`,
@@ -64,8 +66,8 @@ export async function POST(request) {
       },
     });
   } catch (error) {
-    return new Response(
-      JSON.stringify({ error: "Conversion failed", details: error.message }),
+    return NextResponse.json(
+      { error: "Conversion failed", details: error.message },
       { status: 500 }
     );
   }

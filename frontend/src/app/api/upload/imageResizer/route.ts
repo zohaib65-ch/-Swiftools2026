@@ -3,9 +3,9 @@ import sharp from "sharp";
 export async function POST(request) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file");
-    const width = parseInt(formData.get("width")) || null;
-    const height = parseInt(formData.get("height")) || null;
+    const file = formData.get("file") as File;
+    const width = parseInt(formData.get("width") as string) || null;
+    const height = parseInt(formData.get("height") as string) || null;
 
     if (!file) {
       return new Response(JSON.stringify({ error: "No file uploaded" }), { status: 400 });
