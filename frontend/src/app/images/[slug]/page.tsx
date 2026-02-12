@@ -2,15 +2,15 @@
 
 import { useState, useCallback, use } from "react";
 import { useSession } from "next-auth/react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { tools } from "@/lib/tools";
-import { LegacyToolsService } from "@/services/legacy-tools.service";
+import Navbar from "../../../components/Navbar";
+import Footer from "../../../components/Footer";
+import { tools } from "../../../lib/tools";
+import { LegacyToolsService } from "../../../services/legacy-tools.service";
 import Cropper from "react-easy-crop";
-import getCroppedImg from "@/lib/cropImage";
-import CustomFooter from "@/components/CustomFooter";
-import FileUploader from "@/components/FileUploader";
-import JobProgress from "@/components/JobProgress";
+import getCroppedImg from "../../../lib/cropImage";
+import CustomFooter from "../../../components/CustomFooter";
+import FileUploader from "../../../components/FileUploader";
+import JobProgress from "../../../components/JobProgress";
 import { Download, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 

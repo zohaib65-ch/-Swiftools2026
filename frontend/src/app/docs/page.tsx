@@ -9,13 +9,13 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { tools } from "@/lib/docs";
+import { tools } from "../../lib/docs";
 import ReactMarkdown from "react-markdown";
 import { useState, useEffect } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { Cardsections, CardiconMap } from "@/lib/tools";
-import CustomFooter from "@/components/CustomFooter";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import { Cardsections, CardiconMap } from "../../lib/tools";
+import CustomFooter from "../../components/CustomFooter";
 
 export default function DocumentationPage() {
   const [activeCategory, setActiveCategory] = useState(null);

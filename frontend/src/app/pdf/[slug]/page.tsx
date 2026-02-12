@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, use } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "../../../components/Navbar";
+import Footer from "../../../components/Footer";
 import { Lock, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { pdfTool } from "@/lib/tools";
-import StandardFileTool from "@/components/FileTool";
-import FileUploader from "@/components/FileUploader";
-import JobProgress from "@/components/JobProgress";
+import { pdfTool } from "../../../lib/tools";
+import StandardFileTool from "../../../components/FileTool";
+import FileUploader from "../../../components/FileUploader";
+import JobProgress from "../../../components/JobProgress";
 import { LegacyToolsService } from "@/services/legacy-tools.service";
 import { useSession } from "next-auth/react";
 

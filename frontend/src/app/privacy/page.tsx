@@ -1,8 +1,8 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import CustomFooter from "@/components/CustomFooter";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import CustomFooter from "../../components/CustomFooter";
 
 export default function PrivacyPolicy() {
   return (
