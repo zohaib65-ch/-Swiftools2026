@@ -41,20 +41,20 @@ export default function Navbar() {
   if (!mounted) return <div className="h-16" />; // Placeholder with same height
 
   return (
-    <header className="absolute top-3 left-0 right-0 z-40">
+    <header className="absolute top-3 left-0 right-0 z-40" suppressHydrationWarning>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 rounded-full bg-white/70 backdrop-blur-xl shadow-lg shadow-black/5 border border-white/20 px-6 transition-all duration-300 hover:shadow-xl hover:bg-white/80 hover:scale-[1.005]">
 
           {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer group" onClick={() => router.push('/')}>
+          <Link href="/" className="flex items-center gap-2 cursor-pointer group">
             <Image src="/logo.png" alt="Logo" width={110} height={40} className="group-hover:opacity-90 transition-opacity" />
-          </div>
+          </Link>
 
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
             <Link href={"/tools"} onClick={() => setIsOpen(false)} className="hover:text-black transition-colors hover:scale-105 transform">Tools</Link>
-            <Link className="hover:text-black transition-colors hover:scale-105 transform" href="pricing">Pricing</Link>
-            <Link className="hover:text-black transition-colors hover:scale-105 transform" href="docs">API</Link>
+            <Link className="hover:text-black transition-colors hover:scale-105 transform" href="/pricing">Pricing</Link>
+            <Link className="hover:text-black transition-colors hover:scale-105 transform" href="/docs">API</Link>
           </nav>
 
           {/* Desktop Actions */}
@@ -130,8 +130,8 @@ export default function Navbar() {
               <Link href={"/tools"} onClick={() => setIsOpen(false)} className="px-4 py-3 rounded-xl hover:bg-gray-100 hover:text-black transition-all flex items-center gap-3">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Tools
               </Link>
-              <Link onClick={() => setIsOpen(false)} href="pricing" className="px-4 py-3 rounded-xl hover:bg-gray-100 hover:text-black transition-all">Pricing</Link>
-              <Link onClick={() => setIsOpen(false)} href="docs" className="px-4 py-3 rounded-xl hover:bg-gray-100 hover:text-black transition-all">API</Link>
+              <Link onClick={() => setIsOpen(false)} href="/pricing" className="px-4 py-3 rounded-xl hover:bg-gray-100 hover:text-black transition-all">Pricing</Link>
+              <Link onClick={() => setIsOpen(false)} href="/docs" className="px-4 py-3 rounded-xl hover:bg-gray-100 hover:text-black transition-all">API</Link>
             </nav>
           </div>
 

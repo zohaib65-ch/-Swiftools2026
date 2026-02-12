@@ -3,13 +3,17 @@ const FRONTEND_URL = typeof window !== 'undefined' ? window.location.origin : 'h
 
 // Map kebab-case slugs to API route details
 const toolMap = {
+  // Image Tools
   'image-compressor': { path: '/api/upload/imageCompressor', field: 'file' },
   'image-resizer': { path: '/api/upload/imageResizer', field: 'file' },
+  'bulk-image-resizer': { path: '/api/upload/imageResizer', field: 'file' },
+  'image-cropper': { path: '/api/upload/imageResizer', field: 'file' },
+  'social-media-image-cropper': { path: '/api/upload/imageResizer', field: 'file' },
   'image-converter': { path: '/api/upload/imageConversion', field: 'file' },
-  'image-watermark': { path: '/api/upload/image-watermark', field: 'file' },
-  'image-blur': { path: '/api/upload/imageBlur', field: 'file' },
+  'watermark-adder': { path: '/api/upload/image-watermark', field: 'file' },
+  'image-blur-pixelate': { path: '/api/upload/imageBlur', field: 'file' },
   'image-round': { path: '/api/upload/imageRound', field: 'file' },
-  'remove-exif': { path: '/api/upload/remove-exif', field: 'file' },
+  'exif-metadata-remover': { path: '/api/upload/remove-exif', field: 'file' },
   'favicon-generator': { path: '/api/upload/favicon', field: 'file' },
 
   // PDF Tools
@@ -22,7 +26,7 @@ const toolMap = {
 };
 
 export const LegacyToolsService = {
-  async processFile(file, slug, options = {}) {
+  async processFile(file: any, slug: string, options: any = {}) {
     if (!file) throw new Error("No file provided");
 
     // Get API details

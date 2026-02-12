@@ -1,8 +1,14 @@
 "use client";
 
 import { Twitter, Github, Linkedin } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function CustomFooter() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   return (
     <footer >
       <div className="mx-auto max-w-7xl px-6 py-16">
@@ -58,7 +64,7 @@ export default function CustomFooter() {
 
         {/* Bottom Section */}
         <div className="sm:mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-200 pt-6 text-sm text-gray-500 md:flex-row">
-          <p suppressHydrationWarning>© {new Date().getFullYear()} SwiftTools. All rights reserved.</p>
+          <p>© {mounted ? new Date().getFullYear() : "2026"} SwiftTools. All rights reserved.</p>
 
           <div className="flex gap-5">
             <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">

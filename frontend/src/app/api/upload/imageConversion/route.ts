@@ -2,12 +2,15 @@ import sharp from "sharp";
 import path from "path";
 
 const allowedConversions = {
-  "jpg-to-png": { from: ["jpg", "jpeg"], to: "png" },
+  "jpg-to-png": { from: ["jpg", "jpeg", "jfif"], to: "png" },
   "png-to-jpg": { from: ["png"], to: "jpeg" },
-  "jpg-to-webp": { from: ["jpg", "jpeg"], to: "webp" },
+  "jpg-to-webp": { from: ["jpg", "jpeg", "jfif"], to: "webp" },
   "webp-to-jpg": { from: ["webp"], to: "jpeg" },
   "png-to-webp": { from: ["png"], to: "webp" },
   "webp-to-png": { from: ["webp"], to: "png" },
+  "jpg-to-jpg": { from: ["jpg", "jpeg", "jfif"], to: "jpeg" },
+  "png-to-png": { from: ["png"], to: "png" },
+  "webp-to-webp": { from: ["webp"], to: "webp" },
 };
 
 export async function POST(request) {
