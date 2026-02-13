@@ -10,6 +10,8 @@ export default function AboutPage() {
     <div className="min-h-screen bg-linear-to-r from-[#f8f7ff] via-[#fff7f7] to-[#fffdf5] text-gray-900 flex flex-col">
       <Navbar />
 
+      {/* main component */}
+
       <main className="flex-1 max-w-5xl mx-auto px-4 py-12 space-y-16">
         {/* Header */}
         <section className="text-center mt-20 space-y-4">
