@@ -17,13 +17,6 @@
 }
 
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -35,5 +28,9 @@ body {
 
   color: var(--foreground);
   overflow-x: hidden;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.gradient-bg {
+  background: linear-gradient(to right, #00F6FF80 0%, #EE57FF80 25%, #FFA85B80 50%, #58FF9880 75%);
 }
